@@ -44,6 +44,10 @@ module core_v_mini_mcu
 
     output logic uart_tx_o,
 
+    input logic uart2_rx_i,
+
+    output logic uart2_tx_o,
+
     output logic exit_valid_o,
 
     output logic gpio_0_o,
@@ -93,14 +97,6 @@ module core_v_mini_mcu
     output logic gpio_11_o,
     input  logic gpio_11_i,
     output logic gpio_11_oe_o,
-
-    output logic gpio_12_o,
-    input  logic gpio_12_i,
-    output logic gpio_12_oe_o,
-
-    output logic gpio_13_o,
-    input  logic gpio_13_i,
-    output logic gpio_13_oe_o,
 
     output logic spi_flash_sck_o,
     input  logic spi_flash_sck_i,
@@ -468,6 +464,42 @@ module core_v_mini_mcu
   assign memory_subsystem_banks_powergate_iso_n[1] = memory_subsystem_pwr_ctrl_out[1].isogate_en_n;
   assign memory_subsystem_banks_set_retentive_n[1] = memory_subsystem_pwr_ctrl_out[1].retentive_en_n;
   assign memory_subsystem_clkgate_en_n[1] = memory_subsystem_pwr_ctrl_out[1].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[2] = memory_subsystem_pwr_ctrl_out[2].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[2].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[2];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[2] = memory_subsystem_pwr_ctrl_out[2].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[2] = memory_subsystem_pwr_ctrl_out[2].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[2] = memory_subsystem_pwr_ctrl_out[2].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[3] = memory_subsystem_pwr_ctrl_out[3].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[3].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[3];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[3] = memory_subsystem_pwr_ctrl_out[3].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[3] = memory_subsystem_pwr_ctrl_out[3].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[3] = memory_subsystem_pwr_ctrl_out[3].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[4] = memory_subsystem_pwr_ctrl_out[4].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[4].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[4];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[4] = memory_subsystem_pwr_ctrl_out[4].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[4] = memory_subsystem_pwr_ctrl_out[4].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[4] = memory_subsystem_pwr_ctrl_out[4].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[5] = memory_subsystem_pwr_ctrl_out[5].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[5].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[5];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[5] = memory_subsystem_pwr_ctrl_out[5].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[5] = memory_subsystem_pwr_ctrl_out[5].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[5] = memory_subsystem_pwr_ctrl_out[5].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[6] = memory_subsystem_pwr_ctrl_out[6].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[6].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[6];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[6] = memory_subsystem_pwr_ctrl_out[6].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[6] = memory_subsystem_pwr_ctrl_out[6].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[6] = memory_subsystem_pwr_ctrl_out[6].clkgate_en_n;
+  assign memory_subsystem_banks_powergate_switch_n[7] = memory_subsystem_pwr_ctrl_out[7].pwrgate_en_n;
+  assign memory_subsystem_pwr_ctrl_in[7].pwrgate_ack_n = memory_subsystem_banks_powergate_switch_ack_n[7];
+  //isogate exposed outside for UPF sim flow and switch cells
+  assign memory_subsystem_banks_powergate_iso_n[7] = memory_subsystem_pwr_ctrl_out[7].isogate_en_n;
+  assign memory_subsystem_banks_set_retentive_n[7] = memory_subsystem_pwr_ctrl_out[7].retentive_en_n;
+  assign memory_subsystem_clkgate_en_n[7] = memory_subsystem_pwr_ctrl_out[7].clkgate_en_n;
 
   for (genvar i = 0; i < EXT_DOMAINS_RND; i = i + 1) begin
     assign external_subsystem_powergate_switch_no[i]        = external_subsystem_pwr_ctrl_out[i].pwrgate_en_n;
@@ -505,6 +537,16 @@ module core_v_mini_mcu
   logic uart_intr_rx_break_err;
   logic uart_intr_rx_timeout;
   logic uart_intr_rx_parity_err;
+
+  // UART2 PLIC interrupts
+  logic uart2_intr_tx_watermark;
+  logic uart2_intr_rx_watermark;
+  logic uart2_intr_tx_empty;
+  logic uart2_intr_rx_overflow;
+  logic uart2_intr_rx_frame_err;
+  logic uart2_intr_rx_break_err;
+  logic uart2_intr_rx_timeout;
+  logic uart2_intr_rx_parity_err;
 
   // I2s
   logic i2s_rx_valid;
@@ -701,6 +743,16 @@ module core_v_mini_mcu
       .uart_intr_rx_break_err_o(uart_intr_rx_break_err),
       .uart_intr_rx_timeout_o(uart_intr_rx_timeout),
       .uart_intr_rx_parity_err_o(uart_intr_rx_parity_err),
+      .uart2_rx_i,
+      .uart2_tx_o,
+      .uart2_intr_tx_watermark_o(uart2_intr_tx_watermark),
+      .uart2_intr_rx_watermark_o(uart2_intr_rx_watermark),
+      .uart2_intr_tx_empty_o(uart2_intr_tx_empty),
+      .uart2_intr_rx_overflow_o(uart2_intr_rx_overflow),
+      .uart2_intr_rx_frame_err_o(uart2_intr_rx_frame_err),
+      .uart2_intr_rx_break_err_o(uart2_intr_rx_break_err),
+      .uart2_intr_rx_timeout_o(uart2_intr_rx_timeout),
+      .uart2_intr_rx_parity_err_o(uart2_intr_rx_parity_err),
       .spi_rx_valid_i(spi_rx_valid),
       .spi_tx_ready_i(spi_tx_ready),
       .i2s_rx_valid_i(i2s_rx_valid),
@@ -729,6 +781,14 @@ module core_v_mini_mcu
       .uart_intr_rx_break_err_i(uart_intr_rx_break_err),
       .uart_intr_rx_timeout_i(uart_intr_rx_timeout),
       .uart_intr_rx_parity_err_i(uart_intr_rx_parity_err),
+      .uart2_intr_tx_watermark_i(uart2_intr_tx_watermark),
+      .uart2_intr_rx_watermark_i(uart2_intr_rx_watermark),
+      .uart2_intr_tx_empty_i(uart2_intr_tx_empty),
+      .uart2_intr_rx_overflow_i(uart2_intr_rx_overflow),
+      .uart2_intr_rx_frame_err_i(uart2_intr_rx_frame_err),
+      .uart2_intr_rx_break_err_i(uart2_intr_rx_break_err),
+      .uart2_intr_rx_timeout_i(uart2_intr_rx_timeout),
+      .uart2_intr_rx_parity_err_i(uart2_intr_rx_parity_err),
       .dma_window_intr_i(dma_window_intr),
       .cio_gpio_i(gpio_in),
       .cio_gpio_o(gpio_out),
@@ -828,12 +888,24 @@ module core_v_mini_mcu
   assign gpio_in[11]              = gpio_11_i;
   assign gpio_11_o                = gpio_out[11];
   assign gpio_11_oe_o             = gpio_oe[11];
-  assign gpio_in[12]              = gpio_12_i;
-  assign gpio_12_o                = gpio_out[12];
-  assign gpio_12_oe_o             = gpio_oe[12];
-  assign gpio_in[13]              = gpio_13_i;
-  assign gpio_13_o                = gpio_out[13];
-  assign gpio_13_oe_o             = gpio_oe[13];
+  /*
+  assign gpio_in[12]   = gpio_12_i;
+  assign gpio_12_o     = gpio_out[12];
+  assign gpio_12_oe_o  = gpio_oe[12];
+  assign gpio_in[13]   = gpio_13_i;
+  assign gpio_13_o     = gpio_out[13];
+  assign gpio_13_oe_o  = gpio_oe[13];
+  */
+
+  assign gpio_in[12]              = 1'b0;
+  assign gpio_in[13]              = 1'b0;
+
+  assign gpio_out[12]             = 1'b0;
+  assign gpio_out[13]             = 1'b0;
+
+  assign gpio_oe[12]              = 1'b0;
+  assign gpio_oe[13]              = 1'b0;
+
   assign gpio_in[14]              = gpio_14_i;
   assign gpio_14_o                = gpio_out[14];
   assign gpio_14_oe_o             = gpio_oe[14];

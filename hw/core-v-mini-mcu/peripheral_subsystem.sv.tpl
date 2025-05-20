@@ -33,6 +33,16 @@ module peripheral_subsystem
     input logic uart_intr_rx_timeout_i,
     input logic uart_intr_rx_parity_err_i,
 
+    //UART2 PLIC interrupts
+    input logic uart2_intr_tx_watermark_i,
+    input logic uart2_intr_rx_watermark_i,
+    input logic uart2_intr_tx_empty_i,
+    input logic uart2_intr_rx_overflow_i,
+    input logic uart2_intr_rx_frame_err_i,
+    input logic uart2_intr_rx_break_err_i,
+    input logic uart2_intr_rx_timeout_i,
+    input logic uart2_intr_rx_parity_err_i,
+    
     // DMA window PLIC interrupt
     input logic dma_window_intr_i,
 
@@ -174,6 +184,14 @@ module peripheral_subsystem
   assign intr_vector[${interrupts["spi2_intr_event"]}] = spi2_intr_event;
   assign intr_vector[${interrupts["i2s_intr_event"]}] = i2s_intr_event;
   assign intr_vector[${interrupts["dma_window_intr"]}]  = dma_window_intr_i;
+  assign intr_vector[${interrupts["uart2_intr_tx_watermark"]}] = uart2_intr_tx_watermark_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_watermark"]}] = uart2_intr_rx_watermark_i;
+  assign intr_vector[${interrupts["uart2_intr_tx_empty"]}] = uart2_intr_tx_empty_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_overflow"]}] = uart2_intr_rx_overflow_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_frame_err"]}] = uart2_intr_rx_frame_err_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_break_err"]}] = uart2_intr_rx_break_err_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_timeout"]}] = uart2_intr_rx_timeout_i;
+  assign intr_vector[${interrupts["uart2_intr_rx_parity_err"]}] = uart2_intr_rx_parity_err_i;
 
   // External interrupts assignement
   for (genvar i = 0; i < NEXT_INT; i++) begin

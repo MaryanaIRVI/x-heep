@@ -105,6 +105,18 @@ module ao_peripheral_subsystem
     output logic uart_intr_rx_timeout_o,
     output logic uart_intr_rx_parity_err_o,
 
+    // UART2
+    input  logic uart2_rx_i,
+    output logic uart2_tx_o,
+    output logic uart2_intr_tx_watermark_o,
+    output logic uart2_intr_rx_watermark_o,
+    output logic uart2_intr_tx_empty_o,
+    output logic uart2_intr_rx_overflow_o,
+    output logic uart2_intr_rx_frame_err_o,
+    output logic uart2_intr_rx_break_err_o,
+    output logic uart2_intr_rx_timeout_o,
+    output logic uart2_intr_rx_parity_err_o,
+
     // I2s
     input logic i2s_rx_valid_i,
 
@@ -485,6 +497,28 @@ module ao_peripheral_subsystem
       .intr_rx_break_err_o(uart_intr_rx_break_err_o),
       .intr_rx_timeout_o(uart_intr_rx_timeout_o),
       .intr_rx_parity_err_o(uart_intr_rx_parity_err_o)
+  );
+
+  /* UART2 */
+  uart2 #(
+      .reg_req_t(reg_pkg::reg_req_t),
+      .reg_rsp_t(reg_pkg::reg_rsp_t)
+  ) uart2_i (
+      .clk_i,
+      .rst_ni,
+      .reg_req_i(ao_peripheral_slv_req[core_v_mini_mcu_pkg::UART2_IDX]),
+      .reg_rsp_o(ao_peripheral_slv_rsp[core_v_mini_mcu_pkg::UART2_IDX]),
+      .cio_rx_i(uart2_rx_i),
+      .cio_tx_o(uart2_tx_o),
+      .cio_tx_en_o(),
+      .intr_tx_watermark_o(uart2_intr_tx_watermark_o),
+      .intr_rx_watermark_o(uart2_intr_rx_watermark_o),
+      .intr_tx_empty_o(uart2_intr_tx_empty_o),
+      .intr_rx_overflow_o(uart2_intr_rx_overflow_o),
+      .intr_rx_frame_err_o(uart2_intr_rx_frame_err_o),
+      .intr_rx_break_err_o(uart2_intr_rx_break_err_o),
+      .intr_rx_timeout_o(uart2_intr_rx_timeout_o),
+      .intr_rx_parity_err_o(uart2_intr_rx_parity_err_o)
   );
 
 endmodule : ao_peripheral_subsystem

@@ -23,6 +23,7 @@ extern "C" {
 enum module_ {
   kModuleUnknown = 0,
   kModuleUart = 0x4155,       // ASCII "UA".
+  kModuleUart2 = 0x4156,     // ASCII "UB".
   kModuleHmac = 0x4d48,       // ASCII "HM".
   kModuleSigverify = 0x5653,  // ASCII "SV".
 };
@@ -46,6 +47,8 @@ enum module_ {
   X(kErrorOk, 0x739), \
   X(kErrorUartInvalidArgument,      ERROR_(1, kModuleUart, kInvalidArgument)), \
   X(kErrorUartBadBaudRate,          ERROR_(2, kModuleUart, kInvalidArgument)), \
+  X(kErrorUart2InvalidArgument,      ERROR_(1, kModuleUart2, kInvalidArgument)), \
+  X(kErrorUart2BadBaudRate,          ERROR_(2, kModuleUart2, kInvalidArgument)), \
   X(kErrorHmacInvalidArgument,      ERROR_(1, kModuleHmac, kInvalidArgument)), \
   X(kErrorSigverifyInvalidArgument, ERROR_(1, kModuleSigverify, kInvalidArgument)), \
   X(kErrorUnknown, 0xFFFFFFFF)

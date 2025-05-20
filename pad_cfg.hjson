@@ -58,12 +58,20 @@
             num: 1
             type: output
         }
+        uart2_rx: {
+            num: 1
+            type: input
+        }
+        uart2_tx: {
+            num: 1
+            type: output
+        }
         exit_valid: {
             num: 1
             type: output
         }
         gpio: {
-            num: 14
+            num: 12 #it was 14-2
             num_offset: 0 #first gpio is gpio0
             type: inout
         }

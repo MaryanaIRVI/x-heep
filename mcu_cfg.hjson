@@ -78,6 +78,11 @@
             length:  0x00010000
             path:    "./hw/vendor/lowrisc_opentitan/hw/ip/uart/data/uart.hjson"
         }
+        uart2: {
+            offset:  0x000B0000
+            length:  0x00010000
+            path:    "./hw/ip/uart2/data/uart2.hjson"
+        }
     }
 
     peripherals: {
@@ -199,6 +204,14 @@
             spi2_intr_event:         49
             i2s_intr_event:          50
             dma_window_intr:         51
+            uart2_intr_tx_watermark:  52
+            uart2_intr_rx_watermark:  53
+            uart2_intr_tx_empty:      54
+            uart2_intr_rx_overflow:   55
+            uart2_intr_rx_frame_err:  56
+            uart2_intr_rx_break_err:  57
+            uart2_intr_rx_timeout:    58
+            uart2_intr_rx_parity_err: 59
         }
     }
 }

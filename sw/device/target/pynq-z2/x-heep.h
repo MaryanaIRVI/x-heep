@@ -13,7 +13,7 @@ extern "C" {
 
 
 #define REFERENCE_CLOCK_Hz 15*1000*1000
-#define UART_BAUDRATE 9600
+#define UART_BAUDRATE 115200
 // Calculation formula: NCO = 16 * 2^nco_width * baud / fclk.
 // NCO creates 16x of baudrate. So, in addition to the nco_width,
 // 2^4 should be multiplied.

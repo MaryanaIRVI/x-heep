@@ -33,6 +33,16 @@ module peripheral_subsystem
     input logic uart_intr_rx_timeout_i,
     input logic uart_intr_rx_parity_err_i,
 
+    //UART2 PLIC interrupts
+    input logic uart2_intr_tx_watermark_i,
+    input logic uart2_intr_rx_watermark_i,
+    input logic uart2_intr_tx_empty_i,
+    input logic uart2_intr_rx_overflow_i,
+    input logic uart2_intr_rx_frame_err_i,
+    input logic uart2_intr_rx_break_err_i,
+    input logic uart2_intr_rx_timeout_i,
+    input logic uart2_intr_rx_parity_err_i,
+
     // DMA window PLIC interrupt
     input logic dma_window_intr_i,
 
@@ -174,6 +184,14 @@ module peripheral_subsystem
   assign intr_vector[49] = spi2_intr_event;
   assign intr_vector[50] = i2s_intr_event;
   assign intr_vector[51] = dma_window_intr_i;
+  assign intr_vector[52] = uart2_intr_tx_watermark_i;
+  assign intr_vector[53] = uart2_intr_rx_watermark_i;
+  assign intr_vector[54] = uart2_intr_tx_empty_i;
+  assign intr_vector[55] = uart2_intr_rx_overflow_i;
+  assign intr_vector[56] = uart2_intr_rx_frame_err_i;
+  assign intr_vector[57] = uart2_intr_rx_break_err_i;
+  assign intr_vector[58] = uart2_intr_rx_timeout_i;
+  assign intr_vector[59] = uart2_intr_rx_parity_err_i;
 
   // External interrupts assignement
   for (genvar i = 0; i < NEXT_INT; i++) begin

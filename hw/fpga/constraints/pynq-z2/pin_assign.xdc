@@ -70,13 +70,13 @@ set_property -dict {PACKAGE_PIN U12 IOSTANDARD LVCMOS33} [get_ports {gpio_io[5]}
 set_property -dict {PACKAGE_PIN W10 IOSTANDARD LVCMOS33} [get_ports {gpio_io[6]}] ; # rpi_gpio_tri_io[3]
 set_property -dict {PACKAGE_PIN V10 IOSTANDARD LVCMOS33} [get_ports {gpio_io[7]}] ; # rpi_gpio_tri_io[1]
 set_property -dict {PACKAGE_PIN V8 IOSTANDARD LVCMOS33} [get_ports {gpio_io[8]}] ; # rpi_gpio_tri_io[2]
-set_property -dict {PACKAGE_PIN U8 IOSTANDARD LVCMOS33} [get_ports {gpio_io[9]}] ; # rpi_gpio_tri_io[14]
-set_property -dict {PACKAGE_PIN V7 IOSTANDARD LVCMOS33} [get_ports {gpio_io[10]}] ; # rpi_gpio_tri_io[19]
+set_property -dict {PACKAGE_PIN U8 IOSTANDARD LVCMOS33} [get_ports {uart2_tx_o}] ; # rpi_gpio_tri_io[14]
+set_property -dict {PACKAGE_PIN V7 IOSTANDARD LVCMOS33} [get_ports {uart2_rx_i}] ; # rpi_gpio_tri_io[19]
 
 # Tri-color LEDs for TARGET_PYNQ_Z2
-set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports {gpio_io[11]}] ; # rgbleds_6bits_tri_o[5]
-set_property -dict {PACKAGE_PIN G14 IOSTANDARD LVCMOS33} [get_ports {gpio_io[12]}] ; # rgbled_6bits_tri_o[3]
-set_property -dict {PACKAGE_PIN L14 IOSTANDARD LVCMOS33} [get_ports {gpio_io[13]}] ; # rgbleds_6bits_tri_o[4]
+set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports {gpio_io[9]}] ; # rgbleds_6bits_tri_o[5]
+set_property -dict {PACKAGE_PIN G14 IOSTANDARD LVCMOS33} [get_ports {gpio_io[10]}] ; # rgbled_6bits_tri_o[3]
+set_property -dict {PACKAGE_PIN L14 IOSTANDARD LVCMOS33} [get_ports {gpio_io[11]}] ; # rgbleds_6bits_tri_o[4]
 
 # SPI SLAVE
 set_property -dict {PACKAGE_PIN U7 IOSTANDARD LVCMOS33} [get_ports {spi_slave_sck_io}] ; # rpi_gpio_tri_io[9]

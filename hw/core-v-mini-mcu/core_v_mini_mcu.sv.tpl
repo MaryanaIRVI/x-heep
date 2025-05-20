@@ -250,6 +250,16 @@ ${pad.core_v_mini_mcu_interface}
   logic uart_intr_rx_timeout;
   logic uart_intr_rx_parity_err;
 
+  // UART2 PLIC interrupts
+  logic uart2_intr_tx_watermark;
+  logic uart2_intr_rx_watermark;
+  logic uart2_intr_tx_empty;
+  logic uart2_intr_rx_overflow;
+  logic uart2_intr_rx_frame_err;
+  logic uart2_intr_rx_break_err;
+  logic uart2_intr_rx_timeout;
+  logic uart2_intr_rx_parity_err;
+
   // I2s
   logic i2s_rx_valid;
 
@@ -443,6 +453,16 @@ ${pad.core_v_mini_mcu_interface}
       .uart_intr_rx_break_err_o(uart_intr_rx_break_err),
       .uart_intr_rx_timeout_o(uart_intr_rx_timeout),
       .uart_intr_rx_parity_err_o(uart_intr_rx_parity_err),
+      .uart2_rx_i,
+      .uart2_tx_o,
+      .uart2_intr_tx_watermark_o(uart2_intr_tx_watermark),
+      .uart2_intr_rx_watermark_o(uart2_intr_rx_watermark),
+      .uart2_intr_tx_empty_o(uart2_intr_tx_empty),
+      .uart2_intr_rx_overflow_o(uart2_intr_rx_overflow),
+      .uart2_intr_rx_frame_err_o(uart2_intr_rx_frame_err),
+      .uart2_intr_rx_break_err_o(uart2_intr_rx_break_err),
+      .uart2_intr_rx_timeout_o(uart2_intr_rx_timeout),
+      .uart2_intr_rx_parity_err_o(uart2_intr_rx_parity_err),
       .spi_rx_valid_i(spi_rx_valid),
       .spi_tx_ready_i(spi_tx_ready),
       .i2s_rx_valid_i(i2s_rx_valid),
@@ -471,6 +491,14 @@ ${pad.core_v_mini_mcu_interface}
       .uart_intr_rx_break_err_i(uart_intr_rx_break_err),
       .uart_intr_rx_timeout_i(uart_intr_rx_timeout),
       .uart_intr_rx_parity_err_i(uart_intr_rx_parity_err),
+      .uart2_intr_tx_watermark_i(uart2_intr_tx_watermark),
+      .uart2_intr_rx_watermark_i(uart2_intr_rx_watermark),
+      .uart2_intr_tx_empty_i(uart2_intr_tx_empty),
+      .uart2_intr_rx_overflow_i(uart2_intr_rx_overflow),
+      .uart2_intr_rx_frame_err_i(uart2_intr_rx_frame_err),
+      .uart2_intr_rx_break_err_i(uart2_intr_rx_break_err),
+      .uart2_intr_rx_timeout_i(uart2_intr_rx_timeout),
+      .uart2_intr_rx_parity_err_i(uart2_intr_rx_parity_err),
       .dma_window_intr_i(dma_window_intr),
       .cio_gpio_i(gpio_in),
       .cio_gpio_o(gpio_out),
@@ -570,12 +598,24 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_in[11]   = gpio_11_i;
   assign gpio_11_o     = gpio_out[11];
   assign gpio_11_oe_o  = gpio_oe[11];
+  /*
   assign gpio_in[12]   = gpio_12_i;
   assign gpio_12_o     = gpio_out[12];
   assign gpio_12_oe_o  = gpio_oe[12];
   assign gpio_in[13]   = gpio_13_i;
   assign gpio_13_o     = gpio_out[13];
   assign gpio_13_oe_o  = gpio_oe[13];
+  */
+  
+  assign gpio_in[12] = 1'b0;
+  assign gpio_in[13] = 1'b0;
+
+  assign gpio_out[12] = 1'b0;
+  assign gpio_out[13] = 1'b0;
+
+  assign gpio_oe[12] = 1'b0;
+  assign gpio_oe[13] = 1'b0;
+  
   assign gpio_in[14]   = gpio_14_i;
   assign gpio_14_o     = gpio_out[14];
   assign gpio_14_oe_o  = gpio_oe[14];
