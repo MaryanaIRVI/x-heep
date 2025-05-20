@@ -1,5 +1,7 @@
 set remotetimeout 2000
-target extended-remote :3333
+target extended-remote localhost:3333
+directory /home/irvi/riscv-gnu-toolchain/riscv-gcc/libgcc/soft-fp/
 load
 i r pc
-continue
+b /home/irvi/x-heep/sw/device/lib/crt/crt0.S:130
+b /home/irvi/x-heep/sw/applications/example_timer_sdk/main.c:99

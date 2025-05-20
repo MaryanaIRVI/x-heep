@@ -37,6 +37,10 @@ filesets:
     files:
     - hw/fpga/scripts/nexys/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
 
+  ip-fpga-nexys-video:
+    files:
+    - hw/fpga/scripts/nexys-video/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
+
   ip-fpga-zcu104:
     files:
     - hw/fpga/scripts/zcu104/xilinx_generate_clk_wizard.tcl:  { file_type: tclSource }
@@ -48,6 +52,12 @@ filesets:
     - hw/fpga/constraints/common/spi_slave.xdc
     - hw/fpga/constraints/common/jtag.xdc
     - hw/fpga/constraints/common/sync.xdc
+    file_type: xdc
+
+  xdc-fpga-nexys-video:
+    files:
+    - hw/fpga/constraints/nexys-video/pin_assign.xdc
+    - hw/fpga/constraints/nexys-video/constraints.xdc
     file_type: xdc
 
   xdc-fpga-pynq-z2:
@@ -78,5 +88,7 @@ targets:
     - target_pynq-z2 ? (xdc-fpga-pynq-z2)
     - target_nexys-a7-100t ? (ip-fpga-nexys)
     - target_nexys-a7-100t ? (xdc-fpga-nexys)
+    - target_nexys-video ? (ip-fpga-nexys-video)
+    - target_nexys-video ? (xdc-fpga-nexys-video)
     - target_zcu104 ? (ip-fpga-zcu104)
     - target_zcu104 ? (xdc-fpga-zcu104)

@@ -97,8 +97,9 @@ get_time(void)
     return (stop_time_val - start_time_val);
 }
 
-secs_ret
-time_in_secs(CORE_TICKS ticks)
+double
+time_in_secs(CORE_TICKS ticks, ee_u32 freq)
 {
-    return ticks*1E-6;  // Normalized to 1 MHz clock period
+    // return ticks*1E-6;  // Normalized to 1 MHz clock period
+    return ticks / (double)freq;  // Normalized to 30 MHz clock period
 }

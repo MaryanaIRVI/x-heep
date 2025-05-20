@@ -37,7 +37,12 @@ Original Author: Shay Gal-on
         This file contains the framework to acquire a block of memory, seed
    initial parameters, tun t he benchmark and report the results.
 */
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <math.h>
 #include "coremark.h"
+#include "core_v_mini_mcu.h"
+#include "soc_ctrl.h"
 
 /* Function: iterate
         Run the benchmark for a specified number of iterations.
@@ -88,6 +93,113 @@ iterate(void *pres)
     }
     return NULL;
 }
+
+void putstring(char *s)
+{
+    while (*s)
+    {
+        putchar(*s);
+        s++;
+    }
+}
+
+void putlong(long i)
+{
+    char int_str[20]; // An array to store the digits
+    int len = 0; // The length of the string
+    do
+    {
+        // Get the last digit and store it in the array
+        int_str[len] = '0' + i % 10;
+        len++;
+        // Remove the last digit from i
+        i /= 10;
+    } while (i > 0);
+
+    // Print the  reversed string of digits
+    for (int j = len - 1; j >= 0; j--)
+    {
+        putchar(int_str[j]);
+    }
+}
+
+// A function to print a floating point number using putchar
+void putfloat(float x, int p)
+{
+    // Check if x is negative
+    if (x < 0)
+    {
+        // Print a minus sign
+        putchar('-');
+        // Make x positive
+        x = -x;
+    }
+
+    float f = x - (long)x; // Get the fractional part of x
+
+    // Get the p most significant digits of the fractional part as the
+    // integer part of f.
+    // Count the number of initial zeros.
+    int initial_zeros = 0;
+    // Check if the fraction will overflow to the integer part when
+    // rounding up (i.e. if the fraction is 0.999...)
+    int fraction_overflow = 1;
+    for (int j = 0; j < p; j++)
+    {
+        f *= 10;
+        if (f < 1)
+        {
+            // exclude the last digit with round up
+            if (!(j == p - 1 && f >= 0.5f))
+                initial_zeros++;
+        }
+        if (fraction_overflow && (long)f % 10 < 9)
+        {
+            fraction_overflow = 0;
+        }
+    }
+
+    // Round up if necessary
+    if ((f - (long)f) >= 0.5f)
+    {
+        // If the rounding causes a digit to overflow in the fractional
+        // part, then we need to print one less zero
+        if (fraction_overflow == 0)
+        {
+            f += 1;
+            if (f >= 10 && initial_zeros > 0)
+            {
+                initial_zeros--;
+            }
+        }
+        // If the overflow is in the integer part, then we need to print
+        // one more digit in the integer part, and none in the fractional
+        else
+        {
+            f = 0;
+            x += 1;
+            initial_zeros = p - 1;
+        }
+    }
+
+    // Convert the integer part of x into a string of digits
+    putlong((long)x);
+
+    // Print a decimal point
+    putchar('.');
+
+    // Print the initial zeros
+    while (initial_zeros--)
+    {
+        putchar('0');
+    }
+
+    // Convert the fractional part of x into a string of digits
+    if (f > 1)
+        putlong((long)f);
+}
+
+#define PRINTF(fmt, ...)    printf(fmt, ## __VA_ARGS__)
 
 #if (SEED_METHOD == SEED_ARG)
 ee_s32 get_seed_args(int i, int argc, char *argv[]);
@@ -140,6 +252,12 @@ main(int argc, char *argv[])
 #if (MEM_METHOD == MEM_STACK)
     ee_u8 stack_memblock[TOTAL_DATA_SIZE * MULTITHREAD];
 #endif
+
+    // Get current Frequency
+    soc_ctrl_t soc_ctrl;
+    soc_ctrl.base_addr = mmio_region_from_addr((uintptr_t)SOC_CTRL_START_ADDRESS);
+    ee_u32 freq_hz = soc_ctrl_get_frequency(&soc_ctrl);
+
     /* first call any initializations needed */
     portable_init(&(results[0].port), &argc, argv);
     /* First some checks to make sure benchmark will run ok */
@@ -156,14 +274,21 @@ main(int argc, char *argv[])
     results[0].iterations = 1;
 #endif
     results[0].execs = get_seed_32(5);
+    // results[0].seed1      = 0x0;
+    // results[0].seed2      = 0x0;
+    // results[0].seed3      = 0x66;
+    // results[0].iterations = 1000;
+    // results[0].execs = ID_LIST | ID_MATRIX | ID_STATE;
     if (results[0].execs == 0)
     { /* if not supplied, execute all algorithms */
+        ee_printf("No execs specified, running all algorithms.\n");
         results[0].execs = ALL_ALGORITHMS_MASK;
     }
     /* put in some default values based on one seed only for easy testing */
     if ((results[0].seed1 == 0) && (results[0].seed2 == 0)
         && (results[0].seed3 == 0))
     { /* perfromance run */
+        ee_printf("No seeds specified, using default values.\n");
         results[0].seed1 = 0;
         results[0].seed2 = 0;
         results[0].seed3 = 0x66;
@@ -171,6 +296,7 @@ main(int argc, char *argv[])
     if ((results[0].seed1 == 1) && (results[0].seed2 == 0)
         && (results[0].seed3 == 0))
     { /* validation run */
+        ee_printf("Default validation run parameters for coremark.\n");
         results[0].seed1 = 0x3415;
         results[0].seed2 = 0x3415;
         results[0].seed3 = 0x66;
@@ -267,7 +393,7 @@ for (i = 0; i < MULTITHREAD; i++)
             start_time();
             iterate(&results[0]);
             stop_time();
-            secs_passed = time_in_secs(get_time());
+            secs_passed = time_in_secs(get_time(), freq_hz);
         }
         /* now we know it executes for at least 1 sec, set actual run time at
          * about 10 secs */
@@ -374,20 +500,38 @@ for (i = 0; i < MULTITHREAD; i++)
     /* and report results */
     ee_printf("CoreMark Size    : %lu\n", (long unsigned)results[0].size);
     ee_printf("Total ticks      : %lu\n", (long unsigned)total_time);
+    ee_printf("Frequency        : %lu Hz\n", (long unsigned)freq_hz);
+    // putfloat(total_time * 0.033333 * 1E-6, 4);
+    // ee_printf(" ");
+    // putfloat(total_time/(float)(30000000), 4);
+    // ee_printf("\n");
 #if HAS_FLOAT
-    ee_printf("Total time (secs): %f\n", time_in_secs(total_time));
-    if (time_in_secs(total_time) > 0)
-        ee_printf("Iterations/Sec   : %f\n",
-                  default_num_contexts * results[0].iterations
-                      / time_in_secs(total_time));
+    // ee_printf("Total time (secs): %f\n", time_in_secs(total_time, freq_hz));
+    ee_printf("Total time (secs): ");
+    putfloat(time_in_secs(total_time, freq_hz), 4);
+    ee_printf("\n");
+    if (time_in_secs(total_time, freq_hz) > 0) {
+        // ee_printf("Iterations/Sec   : %f\n",
+        //           default_num_contexts * results[0].iterations
+        //               / time_in_secs(total_time, freq_hz));
+        ee_printf("Iterations/Sec   : ");
+        putfloat(default_num_contexts * results[0].iterations / time_in_secs(total_time, freq_hz), 4);
+        ee_printf("\n");
+    }
 #else
-    ee_printf("Total time (secs): %d\n", time_in_secs(total_time));
-    if (time_in_secs(total_time) > 0)
-        ee_printf("Iterations/Sec   : %d\n",
-                  default_num_contexts * results[0].iterations
-                      / time_in_secs(total_time));
+    // ee_printf("Total time (secs): %d\n", time_in_secs(total_time, freq_hz));
+    ee_printf("Total time (secs): ");
+    putfloat(time_in_secs(total_time, freq_hz), 4);
+    ee_printf("\n");
+    if (time_in_secs(total_time, freq_hz) > 0.0f)
+        // ee_printf("Iterations/Sec   : %d\n",
+        //           default_num_contexts * results[0].iterations
+        //               / time_in_secs(total_time, freq_hz));
+        ee_printf("Iterations/Sec   : ");
+        putfloat(default_num_contexts * results[0].iterations / time_in_secs(total_time, freq_hz), 4);
+        ee_printf("\n");
 #endif
-/*  if (time_in_secs(total_time) < 10)
+/*  if (time_in_secs(total_time, freq_hz) < 10)
     {
         ee_printf(
             "ERROR! Must execute for at least 10 secs for a valid result!\n");
@@ -400,7 +544,10 @@ for (i = 0; i < MULTITHREAD; i++)
 #if (MULTITHREAD > 1)
     ee_printf("Parallel %s : %d\n", PARALLEL_METHOD, default_num_contexts);
 #endif
-    ee_printf("Memory location  : %s\n", MEM_LOCATION);
+    // ee_printf("Memory location  : %s\n", MEM_LOCATION);
+    ee_printf("Memory location  : ");
+    putstring(MEM_LOCATION);
+    ee_printf("\n");
     /* output for verification */
     ee_printf("seedcrc          : 0x%04x\n", seedcrc);
     if (results[0].execs & ID_LIST)
@@ -422,16 +569,27 @@ for (i = 0; i < MULTITHREAD; i++)
 #if HAS_FLOAT
         if (known_id == 3)
         {
-            ee_printf("CoreMark 1.0 : %f / %s",
-                      default_num_contexts * results[0].iterations
-                          / time_in_secs(total_time),
-                      COMPILER_VERSION);
+            ee_printf("CoreMark 1.0 : ");
+            putfloat(default_num_contexts * results[0].iterations / time_in_secs(total_time, freq_hz), 4);
+            ee_printf(" / ");
+            ee_printf("CoreMark/MHz : ");
+            putfloat(default_num_contexts * results[0].iterations / time_in_secs(total_time, freq_hz) / (freq_hz / 1E+6), 4);
+            ee_printf(" / ");
+            putstring(COMPILER_VERSION);
+            // ee_printf("CoreMark 1.0 : %f / %s",
+            //           default_num_contexts * results[0].iterations
+            //               / time_in_secs(total_time, freq_hz),
+            //           COMPILER_VERSION);
 //                    COMPILER_VERSION,
 //                    COMPILER_FLAGS);
 #if defined(MEM_LOCATION) && !defined(MEM_LOCATION_UNSPEC)
-            ee_printf(" / %s", MEM_LOCATION);
+            // ee_printf(" / %s", MEM_LOCATION);
+            ee_printf(" / ");
+            putstring(MEM_LOCATION);
 #else
-            ee_printf(" / %s", mem_name[MEM_METHOD]);
+            // ee_printf(" / %s", mem_name[MEM_METHOD]);
+            ee_printf(" / ", mem_name[MEM_METHOD]);
+            ee_printf(mem_name[MEM_METHOD]);
 #endif
 
 #if (MULTITHREAD > 1)
@@ -455,5 +613,7 @@ for (i = 0; i < MULTITHREAD; i++)
     /* And last call any target specific code for finalizing */
     portable_fini(&(results[0].port));
 
+    ee_printf("Done\n");
+    
     return MAIN_RETURN_VAL;
 }

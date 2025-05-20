@@ -25,7 +25,7 @@ PROJECT  ?= hello_world
 # Linker options are 'on_chip' (default),'flash_load','flash_exec'
 LINKER   ?= on_chip
 
-# Target options are 'sim' (default), 'pynq-z2', and 'nexys-a7-100t'
+# Target options are 'sim' (default), 'pynq-z2', 'nexys-a7-100t', and 'nexys-video'
 TARGET   ?= sim
 
 # Compiler options are 'gcc' (default) and 'clang'
@@ -40,7 +40,10 @@ ARCH     ?= rv32imc
 # Path relative from the location of sw/Makefile from which to fetch source files. The directory of that file is the default value.
 SOURCE 	 ?= $(".")
 
-VERBOSE ?= false
+# DEBUG options are 0 (default) and 1
+DEBUG    ?= 0
+
+VERBOSE ?= true
 
 # riscv toolchain install path
 RISCV                      ?= ~/.riscv

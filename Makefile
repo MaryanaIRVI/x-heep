@@ -40,7 +40,7 @@ LINK_FOLDER ?= $(mkfile_path)/sw/linker
 # Linker options are 'on_chip' (default),'flash_load','flash_exec','freertos'
 LINKER   ?= on_chip
 
-# Target options are 'sim' (default) and 'pynq-z2' and 'nexys-a7-100t'
+# Target options are 'sim' (default), 'pynq-z2', 'nexys-a7-100t' and 'nexys-video'
 TARGET   	?= sim
 MCU_CFG_PERIPHERALS  	?= mcu_cfg.hjson
 X_HEEP_CFG  ?= configs/general.hjson
@@ -85,6 +85,15 @@ FLASHREAD_BYTES ?= 256
 
 #binary to store in flash memory
 FLASHWRITE_FILE ?= $(mkfile_path)/sw/build/main.hex
+
+# Debug flag
+DEBUG ?= 0
+
+# System frequency configuration (in MHz)
+MCU_SYSTEM_FREQ_MHz ?= 15
+
+# Export to environment for TCL scripts
+export MCU_SYSTEM_FREQ_MHz
 
 #max address in the hex file, used to program the flash
 ifeq ($(wildcard $(FLASHWRITE_FILE)),)
@@ -162,13 +171,13 @@ verible:
 
 ## Generates the build folder in sw using CMake to build (compile and linking)
 ## @param PROJECT=<folder_name_of_the_project_to_be_built>
-## @param TARGET=sim(default),systemc,pynq-z2,nexys-a7-100t,zcu104
+## @param TARGET=sim(default),systemc,pynq-z2,nexys-a7-100t,zcu104,nexys-video
 ## @param LINKER=on_chip(default),flash_load,flash_exec
 ## @param COMPILER=gcc(default),clang
 ## @param COMPILER_PREFIX=riscv32-unknown-(default)
 ## @param ARCH=rv32imc(default),<any_RISC-V_ISA_string_supported_by_the_CPU>
 app: clean-app
-	@$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) LINK_FOLDER=$(LINK_FOLDER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) COMPILER_FLAGS=$(COMPILER_FLAGS) ARCH=$(ARCH) SOURCE=$(SOURCE) \
+	@$(MAKE) -C sw PROJECT=$(PROJECT) TARGET=$(TARGET) LINKER=$(LINKER) LINK_FOLDER=$(LINK_FOLDER) COMPILER=$(COMPILER) COMPILER_PREFIX=$(COMPILER_PREFIX) COMPILER_FLAGS=$(COMPILER_FLAGS) ARCH=$(ARCH) SOURCE=$(SOURCE) DEBUG=$(DEBUG) \
 	|| { \
 	echo "\033[0;31mHmmm... seems like the compilation failed...\033[0m"; \
 	echo "\033[0;31mIf you do not understand why, it is likely that you either:\033[0m"; \
@@ -255,7 +264,7 @@ run-app-verilator: app
 ## @section Vivado
 
 ## Builds (synthesis and implementation) the bitstream for the FPGA version using Vivado
-## @param FPGA_BOARD=nexys-a7-100t,pynq-z2,zcu104
+## @param FPGA_BOARD=nexys-a7-100t,pynq-z2,zcu104,nexys-video
 ## @param FUSESOC_FLAGS=--flag=<flagname>
 vivado-fpga:
 	$(FUSESOC) --cores-root . run --no-export --target=$(FPGA_BOARD) $(FUSESOC_FLAGS) --build openhwgroup.org:systems:core-v-mini-mcu ${FUSESOC_PARAM} 2>&1 | tee buildvivado.log

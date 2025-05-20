@@ -437,6 +437,29 @@ targets:
         board_repo_paths: [../../../hw/fpga/board_files/vendor/esl_epfl_nexys_a7_100t_board_files]
     toplevel: [xilinx_core_v_mini_mcu_wrapper]
 
+  nexys-video:
+    <<: *default_target
+    default_tool: vivado
+    description: Digilent Nexys Video Board
+    filesets_append:
+    - x_heep_system
+    - rtl-fpga
+    parameters:
+    - COREV_PULP
+    - FPU
+    - X_EXT
+    - SYNTHESIS=true
+    - REMOVE_OBI_FIFO
+    - FPGA_SYNTHESIS=true
+    # We verified that FPGA_NEXYS flag works for both Nexys A7-100T and Nexys Video boards
+    - FPGA_NEXYS=true
+    tools:
+      vivado:
+        part: xc7a200tsbg484-1
+        board_part: digilentinc.com:nexys-video:part0:1.2
+        board_repo_paths: [../../../hw/fpga/board_files/vendor/esl_epfl_nexys_video_board_files]
+    toplevel: [xilinx_core_v_mini_mcu_wrapper]
+
   pynq-z2:
     <<: *default_target
     default_tool: vivado
