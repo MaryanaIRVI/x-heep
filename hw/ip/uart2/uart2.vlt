@@ -8,3 +8,6 @@
 // read-enables (e.g. reg2hw.status.txfull.re). We don't look at the
 // rest of the exposed signals, though: waive the resulting warnings.
 lint_off -rule UNUSED -file "*/rtl/uart2_core.sv" -match "Bits of signal are not used: 'reg2hw'[*]"
+lint_off -rule DECLFILENAME -file "*/uart2_reg_top.sv"
+lint_off -rule WIDTH -file "*/uart2_reg_top.sv"
+

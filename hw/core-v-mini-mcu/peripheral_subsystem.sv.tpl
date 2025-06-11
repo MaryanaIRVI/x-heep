@@ -47,17 +47,9 @@ module peripheral_subsystem
     input logic dma_window_intr_i,
 
     //GPIO
-    input  logic [31:8] cio_gpio_i,
-    output logic [31:8] cio_gpio_o,
-    output logic [31:8] cio_gpio_en_o,
-
-    // I2C Interface
-    input  logic cio_scl_i,
-    output logic cio_scl_o,
-    output logic cio_scl_en_o,
-    input  logic cio_sda_i,
-    output logic cio_sda_o,
-    output logic cio_sda_en_o,
+    input  logic [17:8] cio_gpio_i,
+    output logic [17:8] cio_gpio_o,
+    output logic [17:8] cio_gpio_en_o,
 
     // SPI Host
     output logic                               spi_sck_o,
@@ -71,36 +63,9 @@ module peripheral_subsystem
     output logic                               spi_rx_valid_o,
     output logic                               spi_tx_ready_o,
 
-    // SPI 2 Host
-    output logic                               spi2_sck_o,
-    output logic                               spi2_sck_en_o,
-    output logic [spi_host_reg_pkg::NumCS-1:0] spi2_csb_o,
-    output logic [spi_host_reg_pkg::NumCS-1:0] spi2_csb_en_o,
-    output logic [                        3:0] spi2_sd_o,
-    output logic [                        3:0] spi2_sd_en_o,
-    input  logic [                        3:0] spi2_sd_i,
-
-
     //RV TIMER
     output logic rv_timer_2_intr_o,
-    output logic rv_timer_3_intr_o,
-
-    //I2s
-    output logic i2s_sck_o,
-    output logic i2s_sck_oe_o,
-    input  logic i2s_sck_i,
-    output logic i2s_ws_o,
-    output logic i2s_ws_oe_o,
-    input  logic i2s_ws_i,
-    output logic i2s_sd_o,
-    output logic i2s_sd_oe_o,
-    input  logic i2s_sd_i,
-    output logic i2s_rx_valid_o,
-
-    // PDM2PCM Interface
-    output logic pdm2pcm_clk_o,
-    output logic pdm2pcm_clk_en_o,
-    input  logic pdm2pcm_pdm_i
+    output logic rv_timer_3_intr_o
 );
 
   import core_v_mini_mcu_pkg::*;
@@ -116,8 +81,6 @@ module peripheral_subsystem
   tlul_pkg::tl_h2d_t plic_tl_h2d;
   tlul_pkg::tl_d2h_t plic_tl_d2h;
 
-  tlul_pkg::tl_h2d_t i2c_tl_h2d;
-  tlul_pkg::tl_d2h_t i2c_tl_d2h;
 
   tlul_pkg::tl_h2d_t rv_timer_tl_h2d;
   tlul_pkg::tl_d2h_t rv_timer_tl_d2h;
@@ -132,24 +95,6 @@ module peripheral_subsystem
   logic [7:0] cio_gpio_en_unused;
   logic [7:0] gpio_int_unused;
 
-  logic i2c_intr_fmt_watermark;
-  logic i2c_intr_rx_watermark;
-  logic i2c_intr_fmt_overflow;
-  logic i2c_intr_rx_overflow;
-  logic i2c_intr_nak;
-  logic i2c_intr_scl_interference;
-  logic i2c_intr_sda_interference;
-  logic i2c_intr_stretch_timeout;
-  logic i2c_intr_sda_unstable;
-  logic i2c_intr_trans_complete;
-  logic i2c_intr_tx_empty;
-  logic i2c_intr_tx_nonempty;
-  logic i2c_intr_tx_overflow;
-  logic i2c_intr_acq_overflow;
-  logic i2c_intr_ack_stop;
-  logic i2c_intr_host_timeout;
-  logic spi2_intr_event;
-  logic i2s_intr_event;
 
   // this avoids lint errors
   assign unused_irq_id = irq_id;
@@ -165,24 +110,6 @@ module peripheral_subsystem
   assign intr_vector[${interrupts["uart_intr_rx_timeout"]}] = uart_intr_rx_timeout_i;
   assign intr_vector[${interrupts["uart_intr_rx_parity_err"]}] = uart_intr_rx_parity_err_i;
   assign intr_vector[${interrupts["gpio_intr_31"]}:${interrupts["gpio_intr_8"]}] = gpio_intr;
-  assign intr_vector[${interrupts["intr_fmt_watermark"]}] = i2c_intr_fmt_watermark;
-  assign intr_vector[${interrupts["intr_rx_watermark"]}] = i2c_intr_rx_watermark;
-  assign intr_vector[${interrupts["intr_fmt_overflow"]}] = i2c_intr_fmt_overflow;
-  assign intr_vector[${interrupts["intr_rx_overflow"]}] = i2c_intr_rx_overflow;
-  assign intr_vector[${interrupts["intr_nak"]}] = i2c_intr_nak;
-  assign intr_vector[${interrupts["intr_scl_interference"]}] = i2c_intr_scl_interference;
-  assign intr_vector[${interrupts["intr_sda_interference"]}] = i2c_intr_sda_interference;
-  assign intr_vector[${interrupts["intr_stretch_timeout"]}] = i2c_intr_stretch_timeout;
-  assign intr_vector[${interrupts["intr_sda_unstable"]}] = i2c_intr_sda_unstable;
-  assign intr_vector[${interrupts["intr_trans_complete"]}] = i2c_intr_trans_complete;
-  assign intr_vector[${interrupts["intr_tx_empty"]}] = i2c_intr_tx_empty;
-  assign intr_vector[${interrupts["intr_tx_nonempty"]}] = i2c_intr_tx_nonempty;
-  assign intr_vector[${interrupts["intr_tx_overflow"]}] = i2c_intr_tx_overflow;
-  assign intr_vector[${interrupts["intr_acq_overflow"]}] = i2c_intr_acq_overflow;
-  assign intr_vector[${interrupts["intr_ack_stop"]}] = i2c_intr_ack_stop;
-  assign intr_vector[${interrupts["intr_host_timeout"]}] = i2c_intr_host_timeout;
-  assign intr_vector[${interrupts["spi2_intr_event"]}] = spi2_intr_event;
-  assign intr_vector[${interrupts["i2s_intr_event"]}] = i2s_intr_event;
   assign intr_vector[${interrupts["dma_window_intr"]}]  = dma_window_intr_i;
   assign intr_vector[${interrupts["uart2_intr_tx_watermark"]}] = uart2_intr_tx_watermark_i;
   assign intr_vector[${interrupts["uart2_intr_rx_watermark"]}] = uart2_intr_rx_watermark_i;
@@ -406,76 +333,6 @@ module peripheral_subsystem
       .TL_A_USER_DEFAULT(tlul_pkg::TL_A_USER_DEFAULT),
       .PutFullData(tlul_pkg::PutFullData),
       .Get(tlul_pkg::Get)
-  ) reg_to_tlul_i2c_i (
-      .tl_o(i2c_tl_h2d),
-      .tl_i(i2c_tl_d2h),
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::I2C_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::I2C_IDX])
-  );
-
-% if 'i2c' in peripherals and peripherals['i2c']['is_included'] == 'yes':
-  i2c i2c_i (
-      .clk_i(clk_cg),
-      .rst_ni,
-      .tl_i(i2c_tl_h2d),
-      .tl_o(i2c_tl_d2h),
-      .cio_scl_i,
-      .cio_scl_o,
-      .cio_scl_en_o,
-      .cio_sda_i,
-      .cio_sda_o,
-      .cio_sda_en_o,
-      .intr_fmt_watermark_o(i2c_intr_fmt_watermark),
-      .intr_rx_watermark_o(i2c_intr_rx_watermark),
-      .intr_fmt_overflow_o(i2c_intr_fmt_overflow),
-      .intr_rx_overflow_o(i2c_intr_rx_overflow),
-      .intr_nak_o(i2c_intr_nak),
-      .intr_scl_interference_o(i2c_intr_scl_interference),
-      .intr_sda_interference_o(i2c_intr_sda_interference),
-      .intr_stretch_timeout_o(i2c_intr_stretch_timeout),
-      .intr_sda_unstable_o(i2c_intr_sda_unstable),
-      .intr_trans_complete_o(i2c_intr_trans_complete),
-      .intr_tx_empty_o(i2c_intr_tx_empty),
-      .intr_tx_nonempty_o(i2c_intr_tx_nonempty),
-      .intr_tx_overflow_o(i2c_intr_tx_overflow),
-      .intr_acq_overflow_o(i2c_intr_acq_overflow),
-      .intr_ack_stop_o(i2c_intr_ack_stop),
-      .intr_host_timeout_o(i2c_intr_host_timeout)
-  );
-% else:
-  assign i2c_tl_d2h = '0;
-  assign cio_scl_o = '0;
-  assign cio_scl_en_o = '0;
-  assign cio_sda_o = '0;
-  assign cio_sda_en_o = '0;
-  assign i2c_intr_fmt_watermark = '0;
-  assign i2c_intr_rx_watermark = '0;
-  assign i2c_intr_fmt_overflow = '0;
-  assign i2c_intr_rx_overflow = '0;
-  assign i2c_intr_nak = '0;
-  assign i2c_intr_scl_interference = '0;
-  assign i2c_intr_sda_interference = '0;
-  assign i2c_intr_stretch_timeout = '0;
-  assign i2c_intr_sda_unstable = '0;
-  assign i2c_intr_trans_complete = '0;
-  assign i2c_intr_tx_empty = '0;
-  assign i2c_intr_tx_nonempty = '0;
-  assign i2c_intr_tx_overflow = '0;
-  assign i2c_intr_acq_overflow = '0;
-  assign i2c_intr_ack_stop = '0;
-  assign i2c_intr_host_timeout = '0;
-% endif
-
-  reg_to_tlul #(
-      .req_t(reg_pkg::reg_req_t),
-      .rsp_t(reg_pkg::reg_rsp_t),
-      .tl_h2d_t(tlul_pkg::tl_h2d_t),
-      .tl_d2h_t(tlul_pkg::tl_d2h_t),
-      .tl_a_user_t(tlul_pkg::tl_a_user_t),
-      .tl_a_op_e(tlul_pkg::tl_a_op_e),
-      .TL_A_USER_DEFAULT(tlul_pkg::TL_A_USER_DEFAULT),
-      .PutFullData(tlul_pkg::PutFullData),
-      .Get(tlul_pkg::Get)
   ) rv_timer_reg_to_tlul_i (
       .tl_o(rv_timer_tl_h2d),
       .tl_i(rv_timer_tl_d2h),
@@ -498,96 +355,4 @@ module peripheral_subsystem
   assign rv_timer_3_intr_o = '0;
 % endif
 
-% if 'spi2' in peripherals and peripherals['spi2']['is_included'] == 'yes':
-  spi_host #(
-      .reg_req_t(reg_pkg::reg_req_t),
-      .reg_rsp_t(reg_pkg::reg_rsp_t)
-  ) spi2_host (
-      .clk_i(clk_cg),
-      .rst_ni,
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::SPI2_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::SPI2_IDX]),
-      .alert_rx_i(),
-      .alert_tx_o(),
-      .passthrough_i(spi_device_pkg::PASSTHROUGH_REQ_DEFAULT),
-      .passthrough_o(),
-      .cio_sck_o(spi2_sck_o),
-      .cio_sck_en_o(spi2_sck_en_o),
-      .cio_csb_o(spi2_csb_o),
-      .cio_csb_en_o(spi2_csb_en_o),
-      .cio_sd_o(spi2_sd_o),
-      .cio_sd_en_o(spi2_sd_en_o),
-      .cio_sd_i(spi2_sd_i),
-      .rx_valid_o(),
-      .tx_ready_o(),
-      .intr_error_o(),
-      .intr_spi_event_o(spi2_intr_event)
-  );
-% else:
-  assign peripheral_slv_rsp[core_v_mini_mcu_pkg::SPI2_IDX] = '0;
-  assign spi2_sck_o = '0;
-  assign spi2_sck_en_o = '0;
-  assign spi2_csb_o = '0;
-  assign spi2_csb_en_o = '0;
-  assign spi2_sd_o = '0;
-  assign spi2_sd_en_o = '0;
-  assign spi2_intr_event = '0;
-% endif
-
-% if 'pdm2pcm' in peripherals and peripherals['pdm2pcm']['is_included'] == 'yes':
-  pdm2pcm #(
-      .reg_req_t(reg_pkg::reg_req_t),
-      .reg_rsp_t(reg_pkg::reg_rsp_t)
-  ) pdm2pcm_i (
-      .clk_i(clk_cg),
-      .rst_ni,
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::PDM2PCM_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::PDM2PCM_IDX]),
-      .pdm_i(pdm2pcm_pdm_i),
-      .pdm_clk_o(pdm2pcm_clk_o)
-  );
-% else:
-  assign peripheral_slv_rsp[core_v_mini_mcu_pkg::PDM2PCM_IDX] = '0;
-  assign pdm2pcm_clk_o = '0;
-% endif
-
-  assign pdm2pcm_clk_en_o = 1;
-
-% if 'i2s' in peripherals and peripherals['i2s']['is_included'] == 'yes':
-  i2s #(
-      .reg_req_t(reg_pkg::reg_req_t),
-      .reg_rsp_t(reg_pkg::reg_rsp_t)
-  ) i2s_i (
-      .clk_i(clk_cg),
-      .rst_ni,
-      .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::I2S_IDX]),
-      .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::I2S_IDX]),
-
-      .i2s_sck_o(i2s_sck_o),
-      .i2s_sck_oe_o(i2s_sck_oe_o),
-      .i2s_sck_i(i2s_sck_i),
-      .i2s_ws_o(i2s_ws_o),
-      .i2s_ws_oe_o(i2s_ws_oe_o),
-      .i2s_ws_i(i2s_ws_i),
-      .i2s_sd_o(i2s_sd_o),
-      .i2s_sd_oe_o(i2s_sd_oe_o),
-      .i2s_sd_i(i2s_sd_i),
-      .intr_i2s_event_o(i2s_intr_event),
-      .i2s_rx_valid_o(i2s_rx_valid_o)
-  );
-% else:
-  assign peripheral_slv_rsp[core_v_mini_mcu_pkg::I2S_IDX] = '0;
-
-  assign i2s_sck_oe_o     = 1'b0;
-  assign i2s_sck_o        = 1'b0;
-  assign i2s_ws_oe_o      = 1'b0;
-  assign i2s_ws_o         = 1'b0;
-  assign i2s_sd_oe_o      = 1'b0;
-  assign i2s_sd_o         = 1'b0;
-  assign i2s_intr_event   = 1'b0;
-  assign i2s_rx_valid_o   = 1'b0;
-% endif
-
-
-  
 endmodule : peripheral_subsystem

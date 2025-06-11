@@ -117,8 +117,6 @@ module ao_peripheral_subsystem
     output logic uart2_intr_rx_timeout_o,
     output logic uart2_intr_rx_parity_err_o,
 
-    // I2s
-    input logic i2s_rx_valid_i,
 
     // EXTERNAL PERIPH
     output reg_req_t ext_peripheral_slave_req_o,
@@ -135,7 +133,7 @@ module ao_peripheral_subsystem
   import core_v_mini_mcu_pkg::*;
   import tlul_pkg::*;
 
-  localparam DMA_GLOBAL_TRIGGER_SLOT_NUM = 5;
+  localparam DMA_GLOBAL_TRIGGER_SLOT_NUM = 4;
   localparam DMA_EXT_TRIGGER_SLOT_NUM = core_v_mini_mcu_pkg::DMA_CH_NUM * 2;
 
   /*_________________________________________________________________________________________________________________________________ */
@@ -191,7 +189,6 @@ module ao_peripheral_subsystem
   assign dma_global_trigger_slots[1] = spi_tx_ready_i;
   assign dma_global_trigger_slots[2] = spi_flash_rx_valid;
   assign dma_global_trigger_slots[3] = spi_flash_tx_ready;
-  assign dma_global_trigger_slots[4] = i2s_rx_valid_i;
 
   generate
     for (genvar i = 0; i < core_v_mini_mcu_pkg::DMA_CH_NUM; i++) begin : dma_trigger_slots_gen

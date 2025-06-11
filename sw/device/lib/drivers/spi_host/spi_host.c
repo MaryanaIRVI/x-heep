@@ -357,6 +357,7 @@ spi_return_flags_e spi_output_enable(spi_host_t* spi, bool enable)
 }
 
 // PLIC handles SPI Host 2 interrupts
+/*
 void handler_irq_spi(uint32_t id)
 {
     spi_error_e errors;
@@ -376,6 +377,7 @@ void handler_irq_spi(uint32_t id)
         spi_intr_handler_event_host2(events);
     }
 }
+*/
 
 // FIC SPI Host 1 interrupt handler
 void fic_irq_spi(void)

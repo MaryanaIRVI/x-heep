@@ -48,8 +48,6 @@ extern "C" {
 // Peripheral modules from where to obtain the irq handlers
 #include "uart.h"
 #include "gpio.h"
-#include "i2c.h"
-#include "i2s.h"
 #include "dma.h"
 #include "spi_host.h"
 
@@ -394,6 +392,7 @@ void plic_reset_handlers_list(void)
     {
       handlers[i] = &handler_irq_gpio;
     }
+/*
     else if ( i <= I2C_ID_END)
     {
       handlers[i] = &handler_irq_i2c;
@@ -402,10 +401,23 @@ void plic_reset_handlers_list(void)
     {
       handlers[i] = &handler_irq_spi;
     }
+    else if ( i <= SPI_HOST_ID_END)
+    {
+      handlers[i] = &handler_irq_spi_host;
+    }
+    else if ( i <= I2S_ID_END && i != I2S_ID)
+    {
+      handlers[i] = &handler_irq_i2s;
+    }
+    else if ( i <= I2S_ID_END)
+    {
+      handlers[i] = &handler_irq_i2s;
+    }
     else if ( i == I2S_ID)
     {
       handlers[i] = &handler_irq_i2s;
     }
+*/
     else if ( i == DMA_ID)
     {
       handlers[i] = &handler_irq_dma;

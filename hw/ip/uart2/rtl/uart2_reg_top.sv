@@ -9,8 +9,7 @@
 
 module uart2_reg_top #(
     parameter type reg_req_t = logic,
-    parameter type reg_rsp_t = logic,
-    parameter int AW = 6
+    parameter type reg_rsp_t = logic
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -26,6 +25,7 @@ module uart2_reg_top #(
 
   import uart2_reg_pkg::*;
 
+  localparam int AW = 6;  // Address Width
   localparam int DW = 32;
   localparam int DBW = DW / 8;  // Byte Width
 

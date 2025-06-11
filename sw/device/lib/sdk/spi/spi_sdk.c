@@ -357,19 +357,6 @@ static volatile spi_peripheral_t peripherals[] = {
         .txcnt     = 0,
         .rxcnt     = 0,
         .callbacks = {0}
-    },
-    (spi_peripheral_t) {
-        .instance  = spi_host2,
-        .txwm      = TXWM_DEFAULT,
-        .rxwm      = RXWM_DEFAULT,
-        .last_id   = 0,
-        .timeout   = SPI_TIMEOUT_DEFAULT,
-        .state     = SPI_STATE_NONE,
-        .txn       = {0},
-        .scnt      = 0,
-        .txcnt     = 0,
-        .rxcnt     = 0,
-        .callbacks = {0}
     }
 };
 

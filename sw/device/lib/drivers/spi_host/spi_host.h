@@ -53,11 +53,11 @@
 #define SPI_CSID_INVALID(csid)  csid >= SPI_HOST_PARAM_NUM_C_S
 
 #define spi_host1_peri ((volatile spi_host *) SPI_HOST_START_ADDRESS)
-#define spi_host2_peri ((volatile spi_host *) SPI2_START_ADDRESS)
+//#define spi_host2_peri ((volatile spi_host *) SPI2_START_ADDRESS)
 #define spi_flash_peri ((volatile spi_host *) SPI_FLASH_START_ADDRESS)
 
 #define spi_host1 ((spi_host_t*) spi_host1_peri)
-#define spi_host2 ((spi_host_t*) spi_host2_peri)
+//#define spi_host2 ((spi_host_t*) spi_host2_peri)
 #define spi_flash ((spi_host_t*) spi_flash_peri)
 
 #define SPI_HW(spi_inst) ((volatile spi_host *) spi_inst)

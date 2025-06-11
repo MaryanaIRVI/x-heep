@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     // Inicializa la UART2
     uart_init(&uart2);
 
-    const char *message = "Pynq-z2 se ha comunicado por UART2\n";
+    const char *message = "Bomeback back to back\n";
 
     printf("Mensaje a enviado: %s\n", message);
 

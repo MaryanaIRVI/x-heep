@@ -64,6 +64,8 @@ module testharness #(
 
   wire uart_rx;
   wire uart_tx;
+  wire uart2_rx;
+  wire uart2_tx;
   logic sim_jtag_enable = (JTAG_DPI == 1);
   wire sim_jtag_tck;
   wire sim_jtag_tms;
@@ -75,7 +77,7 @@ module testharness #(
   wire mux_jtag_tdi;
   wire mux_jtag_tdo;
   wire mux_jtag_trstn;
-  wire [31:0] gpio;
+  wire [8:0] gpio;
 
   wire [3:0] spi_flash_sd_io;
   wire [1:0] spi_flash_csb;
@@ -213,6 +215,8 @@ module testharness #(
       .exit_valid_o,
       .uart_rx_i(uart_rx),
       .uart_tx_o(uart_tx),
+      .uart2_rx_i(uart2_rx),
+      .uart2_tx_o(uart2_tx),
       .gpio_0_io(gpio[0]),
       .gpio_1_io(gpio[1]),
       .gpio_2_io(gpio[2]),
@@ -221,12 +225,6 @@ module testharness #(
       .gpio_5_io(gpio[5]),
       .gpio_6_io(gpio[6]),
       .gpio_7_io(gpio[7]),
-      .gpio_8_io(gpio[8]),
-      .gpio_9_io(gpio[9]),
-      .gpio_10_io(gpio[10]),
-      .gpio_11_io(gpio[11]),
-      .gpio_12_io(gpio[12]),
-      .gpio_13_io(gpio[13]),
       .spi_slave_sck_io(spi_sck),
       .spi_slave_cs_io(spi_csb[0]),
       .spi_slave_miso_io(spi_sd_io[1]),
@@ -245,20 +243,6 @@ module testharness #(
       .spi_sd_1_io(spi_sd_io[1]),
       .spi_sd_2_io(spi_sd_io[2]),
       .spi_sd_3_io(spi_sd_io[3]),
-      .pdm2pcm_pdm_io(gpio[18]),
-      .pdm2pcm_clk_io(gpio[19]),
-      .i2s_sck_io(gpio[20]),
-      .i2s_ws_io(gpio[21]),
-      .i2s_sd_io(gpio[22]),
-      .spi2_cs_0_io(gpio[23]),
-      .spi2_cs_1_io(gpio[24]),
-      .spi2_sck_io(gpio[25]),
-      .spi2_sd_0_io(gpio[26]),
-      .spi2_sd_1_io(gpio[27]),
-      .spi2_sd_2_io(gpio[28]),
-      .spi2_sd_3_io(gpio[29]),
-      .i2c_scl_io(gpio[31]),
-      .i2c_sda_io(gpio[30]),
       .exit_value_o,
       .intr_vector_ext_i(intr_vector_ext),
       .xif_compressed_if(ext_if),
@@ -387,6 +371,16 @@ module testharness #(
       .rst_ni,
       .tx_o(uart_rx),
       .rx_i(uart_tx)
+  );
+  uartdpi #(
+      .BAUD('d256000),
+      .FREQ(CLK_FREQUENCY * 1000),  //Hz
+      .NAME("uart2")
+  ) i_uart2 (
+      .clk_i,
+      .rst_ni,
+      .tx_o(uart2_rx),
+      .rx_i(uart2_tx)
   );
 
   // jtag calls from dpi
@@ -613,31 +607,6 @@ module testharness #(
           .in_rsp_o(periph_slave_rsp),
           .out_req_o(ext_periph_slv_req),
           .out_rsp_i(ext_periph_slv_rsp)
-      );
-
-      // GPIO counter example
-      gpio_cnt #(
-          .CntMax(32'd2048)
-      ) gpio_cnt_i (
-          .clk_i,
-          .rst_ni,
-          .gpio_i(gpio[30]),
-          .gpio_o(gpio[31])
-      );
-
-      pdm2pcm_dummy pdm2pcm_dummy_i (
-          .clk_i,
-          .rst_ni,
-          .pdm_data_o(gpio[18]),
-          .pdm_clk_i (gpio[19])
-      );
-
-      // I2s "microphone"/rx example
-      i2s_microphone i2s_microphone_i (
-          .rst_ni(rst_ni),
-          .i2s_sck_i(gpio[20]),
-          .i2s_ws_i(gpio[21]),
-          .i2s_sd_o(gpio[22])
       );
 
 `ifndef VERILATOR

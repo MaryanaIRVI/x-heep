@@ -33,3 +33,5 @@ lint_off -rule UNUSED -file "*vendor/pulp_platform_register_interface/src/reg_mu
 lint_off -rule WIDTH -file "*/system_xbar.sv" -match "Operator ADD expects*"
 lint_off -rule UNUSED -file "*/core-v-mini-mcu/ao_peripheral_subsystem.sv" -match "Signal is not used: 'spi_slave_miso_i'*"
 lint_off -rule UNOPTFLAT -file "*/debug_subsystem.sv" -match "Signal unoptimizable*"
+lint_off -rule WIDTH -file "*/ao_peripheral_subsystem.sv"
+lint_off -rule WIDTH -file "*/peripheral_subsystem.sv"

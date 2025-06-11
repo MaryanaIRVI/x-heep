@@ -64,17 +64,17 @@
 /**
  * Start and end ID of the I2C interrupt request lines
 */
-#define I2C_ID_END      INTR_HOST_TIMEOUT
+//#define I2C_ID_END      INTR_HOST_TIMEOUT
 
 /**
  * ID of the SPI interrupt request line
 */
-#define SPI_ID          SPI2_INTR_EVENT
+//#define SPI_ID          SPI2_INTR_EVENT
 
 /**
  * ID of the I2S interrupt request lines
  */
-#define I2S_ID          I2S_INTR_EVENT
+//#define I2S_ID          I2S_INTR_EVENT
 
 /**
  * ID of the DMA interrupt request line

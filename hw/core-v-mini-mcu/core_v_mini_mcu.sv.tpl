@@ -230,9 +230,9 @@ ${pad.core_v_mini_mcu_interface}
   logic spi_flash_intr, spi_intr, spi_rx_valid, spi_tx_ready;
 
   // GPIO
-  logic [31:8] gpio_in;
-  logic [31:8] gpio_out;
-  logic [31:8] gpio_oe;
+  logic [18:8] gpio_in;
+  logic [18:8] gpio_out;
+  logic [18:8] gpio_oe;
 
   // GPIO_AO
   logic [7:0] gpio_ao_in;
@@ -259,9 +259,6 @@ ${pad.core_v_mini_mcu_interface}
   logic uart2_intr_rx_break_err;
   logic uart2_intr_rx_timeout;
   logic uart2_intr_rx_parity_err;
-
-  // I2s
-  logic i2s_rx_valid;
 
   assign intr = {
     1'b0, irq_fast, 4'b0, irq_external, 3'b0, rv_timer_intr[0], 3'b0, irq_software, 3'b0
@@ -465,7 +462,6 @@ ${pad.core_v_mini_mcu_interface}
       .uart2_intr_rx_parity_err_o(uart2_intr_rx_parity_err),
       .spi_rx_valid_i(spi_rx_valid),
       .spi_tx_ready_i(spi_tx_ready),
-      .i2s_rx_valid_i(i2s_rx_valid),
       .ext_peripheral_slave_req_o,
       .ext_peripheral_slave_resp_i,
       .ext_dma_slot_tx_i,
@@ -503,12 +499,6 @@ ${pad.core_v_mini_mcu_interface}
       .cio_gpio_i(gpio_in),
       .cio_gpio_o(gpio_out),
       .cio_gpio_en_o(gpio_oe),
-      .cio_scl_i(i2c_scl_i),
-      .cio_scl_o(i2c_scl_o),
-      .cio_scl_en_o(i2c_scl_oe_o),
-      .cio_sda_i(i2c_sda_i),
-      .cio_sda_o(i2c_sda_o),
-      .cio_sda_en_o(i2c_sda_oe_o),
       .spi_sck_o,
       .spi_sck_en_o(spi_sck_oe_o),
       .spi_csb_o({spi_cs_1_o,spi_cs_0_o}),
@@ -519,28 +509,8 @@ ${pad.core_v_mini_mcu_interface}
       .spi_intr_event_o(spi_intr),
       .spi_rx_valid_o(spi_rx_valid),
       .spi_tx_ready_o(spi_tx_ready),
-      .spi2_sck_o,
-      .spi2_sck_en_o(spi2_sck_oe_o),
-      .spi2_csb_o({spi2_cs_1_o, spi2_cs_0_o}),
-      .spi2_csb_en_o({spi2_cs_1_oe_o, spi2_cs_0_oe_o}),
-      .spi2_sd_o({spi2_sd_3_o, spi2_sd_2_o, spi2_sd_1_o, spi2_sd_0_o}),
-      .spi2_sd_en_o({spi2_sd_3_oe_o, spi2_sd_2_oe_o, spi2_sd_1_oe_o, spi2_sd_0_oe_o}),
-      .spi2_sd_i({spi2_sd_3_i, spi2_sd_2_i, spi2_sd_1_i, spi2_sd_0_i}),
       .rv_timer_2_intr_o(rv_timer_intr[2]),
-      .rv_timer_3_intr_o(rv_timer_intr[3]),
-      .pdm2pcm_clk_o(pdm2pcm_clk_o),
-      .pdm2pcm_clk_en_o(pdm2pcm_clk_oe_o),
-      .pdm2pcm_pdm_i(pdm2pcm_pdm_i),
-      .i2s_sck_o(i2s_sck_o),
-      .i2s_sck_oe_o(i2s_sck_oe_o),
-      .i2s_sck_i(i2s_sck_i),
-      .i2s_ws_o(i2s_ws_o),
-      .i2s_ws_oe_o(i2s_ws_oe_o),
-      .i2s_ws_i(i2s_ws_i),
-      .i2s_sd_o(i2s_sd_o),
-      .i2s_sd_oe_o(i2s_sd_oe_o),
-      .i2s_sd_i(i2s_sd_i),
-      .i2s_rx_valid_o(i2s_rx_valid)
+      .rv_timer_3_intr_o(rv_timer_intr[3])
   );
 
   // Debug_req assign
@@ -558,9 +528,6 @@ ${pad.core_v_mini_mcu_interface}
 
   assign ext_cpu_subsystem_rst_no = cpu_subsystem_rst_n;
   assign ext_debug_reset_no = debug_reset_n;
-
-  assign pdm2pcm_pdm_o = 0;
-  assign pdm2pcm_pdm_oe_o = 0;
 
   assign gpio_ao_in[0] = gpio_0_i;
   assign gpio_0_o      = gpio_ao_out[0];
@@ -586,6 +553,7 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_ao_in[7] = gpio_7_i;
   assign gpio_7_o      = gpio_ao_out[7];
   assign gpio_7_oe_o   = gpio_ao_oe[7];
+  /*
   assign gpio_in[8]    = gpio_8_i;
   assign gpio_8_o      = gpio_out[8];
   assign gpio_8_oe_o   = gpio_oe[8];
@@ -598,7 +566,6 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_in[11]   = gpio_11_i;
   assign gpio_11_o     = gpio_out[11];
   assign gpio_11_oe_o  = gpio_oe[11];
-  /*
   assign gpio_in[12]   = gpio_12_i;
   assign gpio_12_o     = gpio_out[12];
   assign gpio_12_oe_o  = gpio_oe[12];
@@ -606,13 +573,25 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_13_o     = gpio_out[13];
   assign gpio_13_oe_o  = gpio_oe[13];
   */
-  
+
+  assign gpio_in[8] = 1'b0;
+  assign gpio_in[9] = 1'b0;
+  assign gpio_in[10] = 1'b0;
+  assign gpio_in[11] = 1'b0;
   assign gpio_in[12] = 1'b0;
   assign gpio_in[13] = 1'b0;
 
+  assign gpio_out[8] = 1'b0;
+  assign gpio_out[9] = 1'b0;
+  assign gpio_out[10] = 1'b0;
+  assign gpio_out[11] = 1'b0;
   assign gpio_out[12] = 1'b0;
   assign gpio_out[13] = 1'b0;
 
+  assign gpio_oe[8] = 1'b0;
+  assign gpio_oe[9] = 1'b0;
+  assign gpio_oe[10] = 1'b0;
+  assign gpio_oe[11] = 1'b0;
   assign gpio_oe[12] = 1'b0;
   assign gpio_oe[13] = 1'b0;
   
@@ -628,6 +607,7 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_in[17]   = gpio_17_i;
   assign gpio_17_o     = gpio_out[17];
   assign gpio_17_oe_o  = gpio_oe[17];
+  /*
   assign gpio_in[18]   = gpio_18_i;
   assign gpio_18_o     = gpio_out[18];
   assign gpio_18_oe_o  = gpio_oe[18];
@@ -670,5 +650,5 @@ ${pad.core_v_mini_mcu_interface}
   assign gpio_in[31]   = gpio_31_i;
   assign gpio_31_o     = gpio_out[31];
   assign gpio_31_oe_o  = gpio_oe[31];
-
+*/
 endmodule  // core_v_mini_mcu
