@@ -346,7 +346,7 @@ run-fpga-flash-load:
 	}
 	@echo "\033[0;33mYou can exit Picocom with ctrl+A, ctrl+Q\033[0m";
 	@echo "\033[0;33mPress the RESET button on the FPGA to start the program\033[0m";
-	picocom -b 9600 -r -l --imap lfcrlf /dev/serial/by-id/usb-FTDI_Quad_RS232-HS-if02-port0;
+	picocom -b 115200 -r -l --imap lfcrlf /dev/serial/by-id/usb-FTDI_Quad_RS232-HS-if02-port0;
 
 ## @section Profiling
 ## Run the profiling on a RTL simulation generating a flamegraph.

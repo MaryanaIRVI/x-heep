@@ -59,7 +59,7 @@
 /**
  * Start and end ID of the GPIO interrupt request lines
 */
-#define GPIO_ID_END     GPIO_INTR_31
+#define GPIO_ID_END     GPIO_INTR_13
 
 /**
  * Start and end ID of the I2C interrupt request lines

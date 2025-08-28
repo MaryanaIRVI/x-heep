@@ -77,15 +77,15 @@ module testharness #(
   wire mux_jtag_tdi;
   wire mux_jtag_tdo;
   wire mux_jtag_trstn;
-  wire [8:0] gpio;
+  wire [14:0] gpio;
 
   wire [3:0] spi_flash_sd_io;
   wire [1:0] spi_flash_csb;
   wire spi_flash_sck;
 
   wire [3:0] spi_sd_io;
-  wire [1:0] spi_csb;
-  wire spi_sck;
+  wire spi_csb_0_o, spi_csb_1_o;
+  wire spi_sck_o;
 
   logic [EXT_PERIPHERALS_PORT_SEL_WIDTH-1:0] ext_periph_select;
 
@@ -225,10 +225,12 @@ module testharness #(
       .gpio_5_io(gpio[5]),
       .gpio_6_io(gpio[6]),
       .gpio_7_io(gpio[7]),
-      .spi_slave_sck_io(spi_sck),
-      .spi_slave_cs_io(spi_csb[0]),
-      .spi_slave_miso_io(spi_sd_io[1]),
-      .spi_slave_mosi_io(spi_sd_io[0]),
+      .gpio_8_io(gpio[8]),
+      .gpio_9_io(gpio[9]),
+      .gpio_10_io(gpio[10]),
+      .gpio_11_io(gpio[11]),
+      .gpio_12_io(gpio[12]),
+      .gpio_13_io(gpio[13]),
       .spi_flash_sck_io(spi_flash_sck),
       .spi_flash_cs_0_io(spi_flash_csb[0]),
       .spi_flash_cs_1_io(spi_flash_csb[1]),
@@ -236,9 +238,9 @@ module testharness #(
       .spi_flash_sd_1_io(spi_flash_sd_io[1]),
       .spi_flash_sd_2_io(spi_flash_sd_io[2]),
       .spi_flash_sd_3_io(spi_flash_sd_io[3]),
-      .spi_sck_io(spi_sck),
-      .spi_cs_0_io(spi_csb[0]),
-      .spi_cs_1_io(spi_csb[1]),
+      .spi_sck_io(spi_sck_o),
+      .spi_cs_0_io(spi_csb_0_o),
+      .spi_cs_1_io(spi_csb_1_o),
       .spi_sd_0_io(spi_sd_io[0]),
       .spi_sd_1_io(spi_sd_io[1]),
       .spi_sd_2_io(spi_sd_io[2]),

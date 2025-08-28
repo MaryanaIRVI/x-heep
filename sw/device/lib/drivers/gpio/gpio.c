@@ -101,12 +101,12 @@ extern "C" {
 /**
  * The first interrupt ID for the GPIOS
  */
-#define GPIO_INTR_START GPIO_INTR_8
+#define GPIO_INTR_START GPIO_INTR_0
 
 /**
  * The last interrupt ID for the GPIOS
  */
-#define GPIO_INTR_END GPIO_INTR_31
+#define GPIO_INTR_END GPIO_INTR_13
 
 /**
  * The number of GPIO interrupt IDs

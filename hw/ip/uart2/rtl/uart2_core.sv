@@ -32,8 +32,8 @@ module uart2_core (
   logic [15:0] rx_val_q;
   logic [ 7:0] uart2_rdata;
   logic tick_baud_x16, rx_tick_baud;
-  logic [5:0] tx_fifo_depth, rx_fifo_depth;
-  logic [5:0] rx_fifo_depth_prev_q;
+  logic [10:0] tx_fifo_depth, rx_fifo_depth;
+  logic [10:0] rx_fifo_depth_prev_q;
   logic [23:0] rx_timeout_count_d, rx_timeout_count_q, uart2_rxto_val;
   logic rx_fifo_depth_changed, uart2_rxto_en;
   logic tx_enable, rx_enable;
@@ -171,7 +171,7 @@ module uart2_core (
   prim_fifo_sync #(
       .Width(8),
       .Pass (1'b0),
-      .Depth(32)
+      .Depth(1024)
   ) u_uart2_txfifo (
       .clk_i,
       .rst_ni,
@@ -271,7 +271,7 @@ module uart2_core (
   prim_fifo_sync #(
       .Width(8),
       .Pass (1'b0),
-      .Depth(32)
+      .Depth(1024)
   ) u_uart2_rxfifo (
       .clk_i,
       .rst_ni,
@@ -297,10 +297,10 @@ module uart2_core (
 
   always_comb begin
     unique case (uart2_fifo_txilvl)
-      2'h0:    tx_watermark_d = (tx_fifo_depth < 6'd2);
-      2'h1:    tx_watermark_d = (tx_fifo_depth < 6'd4);
-      2'h2:    tx_watermark_d = (tx_fifo_depth < 6'd8);
-      default: tx_watermark_d = (tx_fifo_depth < 6'd16);
+      2'h0:    tx_watermark_d = (tx_fifo_depth < 11'd2);
+      2'h1:    tx_watermark_d = (tx_fifo_depth < 11'd4);
+      2'h2:    tx_watermark_d = (tx_fifo_depth < 11'd8);
+      default: tx_watermark_d = (tx_fifo_depth < 11'd16);
     endcase
   end
 
@@ -332,11 +332,11 @@ module uart2_core (
 
   always_comb begin
     unique case (uart2_fifo_rxilvl)
-      3'h0:    rx_watermark_d = (rx_fifo_depth >= 6'd1);
-      3'h1:    rx_watermark_d = (rx_fifo_depth >= 6'd4);
-      3'h2:    rx_watermark_d = (rx_fifo_depth >= 6'd8);
-      3'h3:    rx_watermark_d = (rx_fifo_depth >= 6'd16);
-      3'h4:    rx_watermark_d = (rx_fifo_depth >= 6'd30);
+      3'h0:    rx_watermark_d = (rx_fifo_depth >= 11'd1);
+      3'h1:    rx_watermark_d = (rx_fifo_depth >= 11'd4);
+      3'h2:    rx_watermark_d = (rx_fifo_depth >= 11'd8);
+      3'h3:    rx_watermark_d = (rx_fifo_depth >= 11'd16);
+      3'h4:    rx_watermark_d = (rx_fifo_depth >= 11'd30);
       default: rx_watermark_d = 1'b0;
     endcase
   end
@@ -371,7 +371,7 @@ module uart2_core (
   always_ff @(posedge clk_i or negedge rst_ni) begin
     if (!rst_ni) begin
       rx_timeout_count_q   <= 24'd0;
-      rx_fifo_depth_prev_q <= 6'd0;
+      rx_fifo_depth_prev_q <= 11'd0;
     end else begin
       rx_timeout_count_q   <= rx_timeout_count_d;
       rx_fifo_depth_prev_q <= rx_fifo_depth;

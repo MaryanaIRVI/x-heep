@@ -1048,6 +1048,7 @@ typedef struct packed {
  obi_inst_resp_t             bus_resp;
  mpu_status_e                mpu_status;
  align_status_e              align_status;   // Alignment status (for mret pointers)
+ //logic                       wpt_match;
 } inst_resp_t;
 
 // Reset value for the inst_resp_t type

@@ -206,8 +206,8 @@ package uart2_reg_pkg;
   } uart2_hw2reg_fifo_ctrl_reg_t;
 
   typedef struct packed {
-    struct packed {logic [5:0] d;} txlvl;
-    struct packed {logic [5:0] d;} rxlvl;
+    struct packed {logic [10:0] d;} txlvl;
+    struct packed {logic [10:0] d;} rxlvl;
   } uart2_hw2reg_fifo_status_reg_t;
 
   typedef struct packed {logic [15:0] d;} uart2_hw2reg_val_reg_t;

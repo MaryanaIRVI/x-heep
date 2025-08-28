@@ -47,9 +47,9 @@ module peripheral_subsystem
     input logic dma_window_intr_i,
 
     //GPIO
-    input  logic [17:8] cio_gpio_i,
-    output logic [17:8] cio_gpio_o,
-    output logic [17:8] cio_gpio_en_o,
+    input  logic [13:0] cio_gpio_i,
+    output logic [13:0] cio_gpio_o,
+    output logic [13:0] cio_gpio_en_o,
 
     // SPI Host
     output logic                               spi_sck_o,
@@ -90,11 +90,12 @@ module peripheral_subsystem
   logic [$clog2(rv_plic_reg_pkg::NumSrc)-1:0] irq_id[rv_plic_reg_pkg::NumTarget];
   logic [$clog2(rv_plic_reg_pkg::NumSrc)-1:0] unused_irq_id[rv_plic_reg_pkg::NumTarget];
 
-  logic [31:8] gpio_intr;
+  logic [14:0] gpio_intr;
+  /*
   logic [7:0] cio_gpio_unused;
   logic [7:0] cio_gpio_en_unused;
   logic [7:0] gpio_int_unused;
-
+  */
 
   // this avoids lint errors
   assign unused_irq_id = irq_id;
@@ -109,16 +110,16 @@ module peripheral_subsystem
   assign intr_vector[6] = uart_intr_rx_break_err_i;
   assign intr_vector[7] = uart_intr_rx_timeout_i;
   assign intr_vector[8] = uart_intr_rx_parity_err_i;
-  assign intr_vector[32:9] = gpio_intr;
-  assign intr_vector[51] = dma_window_intr_i;
-  assign intr_vector[52] = uart2_intr_tx_watermark_i;
-  assign intr_vector[53] = uart2_intr_rx_watermark_i;
-  assign intr_vector[54] = uart2_intr_tx_empty_i;
-  assign intr_vector[55] = uart2_intr_rx_overflow_i;
-  assign intr_vector[56] = uart2_intr_rx_frame_err_i;
-  assign intr_vector[57] = uart2_intr_rx_break_err_i;
-  assign intr_vector[58] = uart2_intr_rx_timeout_i;
-  assign intr_vector[59] = uart2_intr_rx_parity_err_i;
+  assign intr_vector[22:9] = gpio_intr;
+  assign intr_vector[38] = dma_window_intr_i;
+  assign intr_vector[39] = uart2_intr_tx_watermark_i;
+  assign intr_vector[40] = uart2_intr_rx_watermark_i;
+  assign intr_vector[41] = uart2_intr_tx_empty_i;
+  assign intr_vector[42] = uart2_intr_rx_overflow_i;
+  assign intr_vector[43] = uart2_intr_rx_frame_err_i;
+  assign intr_vector[44] = uart2_intr_rx_break_err_i;
+  assign intr_vector[45] = uart2_intr_rx_timeout_i;
+  assign intr_vector[46] = uart2_intr_rx_parity_err_i;
 
   // External interrupts assignement
   for (genvar i = 0; i < NEXT_INT; i++) begin
@@ -284,11 +285,11 @@ module peripheral_subsystem
       .rst_ni,
       .reg_req_i(peripheral_slv_req[core_v_mini_mcu_pkg::GPIO_IDX]),
       .reg_rsp_o(peripheral_slv_rsp[core_v_mini_mcu_pkg::GPIO_IDX]),
-      .gpio_in({cio_gpio_i, 8'b0}),
-      .gpio_out({cio_gpio_o, cio_gpio_unused}),
-      .gpio_tx_en_o({cio_gpio_en_o, cio_gpio_en_unused}),
+      .gpio_in({cio_gpio_i}),
+      .gpio_out({cio_gpio_o}),
+      .gpio_tx_en_o({cio_gpio_en_o}),
       .gpio_in_sync_o(),
-      .pin_level_interrupts_o({gpio_intr, gpio_int_unused}),
+      .pin_level_interrupts_o({gpio_intr}),
       .global_interrupt_o()
   );
 

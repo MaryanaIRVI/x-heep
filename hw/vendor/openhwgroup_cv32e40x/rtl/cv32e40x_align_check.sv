@@ -176,7 +176,7 @@ module cv32e40x_align_check import cv32e40x_pkg::*;
       assign core_trans_we = 1'b0;
     end
     else begin: alcheck_lsu
-      assign core_trans_we = core_trans_i.we;
+      //assign core_trans_we = core_trans_i.we;
     end
   endgenerate
 

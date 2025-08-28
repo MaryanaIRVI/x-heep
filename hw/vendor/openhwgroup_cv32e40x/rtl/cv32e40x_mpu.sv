@@ -219,9 +219,9 @@ module cv32e40x_mpu import cv32e40x_pkg::*;
     end
     else begin: mpu_lsu
       assign instr_fetch_access    = 1'b0;
-      assign load_access           = !core_trans_i.we;
-      assign core_trans_we         = core_trans_i.we;
-      assign core_resp_o.wpt_match = 1'b0; // Will be set by upstream wpt-module within load_store_unit
+      //assign load_access           = !core_trans_i.we;
+      //assign core_trans_we         = core_trans_i.we;
+      //assign core_resp_o.wpt_match = 1'b0; // Will be set by upstream wpt-module within load_store_unit
     end
   endgenerate
 

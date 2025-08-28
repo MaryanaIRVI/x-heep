@@ -9,7 +9,8 @@
 
 module uart2_reg_top #(
     parameter type reg_req_t = logic,
-    parameter type reg_rsp_t = logic
+    parameter type reg_rsp_t = logic,
+    parameter int AW = 6
 ) (
     input logic clk_i,
     input logic rst_ni,
@@ -19,13 +20,13 @@ module uart2_reg_top #(
     output uart2_reg_pkg::uart2_reg2hw_t reg2hw,  // Write
     input uart2_reg_pkg::uart2_hw2reg_t hw2reg,  // Read
 
+
     // Config
     input devmode_i  // If 1, explicit error return for unmapped register access
 );
 
   import uart2_reg_pkg::*;
 
-  localparam int AW = 6;  // Address Width
   localparam int DW = 32;
   localparam int DBW = DW / 8;  // Byte Width
 

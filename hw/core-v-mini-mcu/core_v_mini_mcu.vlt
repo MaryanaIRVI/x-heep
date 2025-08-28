@@ -35,3 +35,4 @@ lint_off -rule UNUSED -file "*/core-v-mini-mcu/ao_peripheral_subsystem.sv" -matc
 lint_off -rule UNOPTFLAT -file "*/debug_subsystem.sv" -match "Signal unoptimizable*"
 lint_off -rule WIDTH -file "*/ao_peripheral_subsystem.sv"
 lint_off -rule WIDTH -file "*/peripheral_subsystem.sv"
+lint_off -rule UNUSED -file "*/ao_peripheral_subsystem.sv" -match "Bits of signal are not used: 'intr_vector_ext_i'*"

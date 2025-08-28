@@ -195,6 +195,7 @@ ${pad_constant_driver_assign}
 
 ${pad_mux_process}
 
+% if total_pad_muxed > 0 or pads_attributes != None:
   pad_control #(
       .reg_req_t(reg_pkg::reg_req_t),
       .reg_rsp_t(reg_pkg::reg_rsp_t),
@@ -217,6 +218,12 @@ ${pad_mux_process}
       .pad_muxes_o(pad_muxes)
 % endif
   );
+% else:
+  // No pad control needed - tie off pad_resp
+  assign pad_resp.ready = 1'b1;
+  assign pad_resp.rdata = 32'h0;
+  assign pad_resp.error = 1'b0;
+% endif
 
   rstgen rstgen_i (
     .clk_i(clk_in_x),

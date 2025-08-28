@@ -13,7 +13,6 @@ filesets:
       - pulp-platform.org::common_cells
     files:
     - rtl/pad_control_reg_pkg.sv
-    - rtl/pad_control_reg_top.sv
     - rtl/pad_control.sv
     file_type: systemVerilogSource
 

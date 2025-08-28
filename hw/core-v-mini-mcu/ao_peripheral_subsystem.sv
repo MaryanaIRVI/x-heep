@@ -88,11 +88,12 @@ module ao_peripheral_subsystem
     output logic [14:0] fast_intr_o,
 
     // GPIO
+    /*
     input  logic [7:0] cio_gpio_i,
     output logic [7:0] cio_gpio_o,
     output logic [7:0] cio_gpio_en_o,
     output logic [7:0] intr_gpio_o,
-
+    */
     // UART
     input  logic uart_rx_i,
     output logic uart_tx_o,
@@ -161,9 +162,11 @@ module ao_peripheral_subsystem
   logic spi_flash_tx_ready;
 
   /* GPIOs signals */
-  logic [23:0] intr_gpio_unused;
-  logic [23:0] cio_gpio_unused;
-  logic [23:0] cio_gpio_en_unused;
+  /*
+  logic [13:0] intr_gpio_unused;
+  logic [13:0] cio_gpio_unused;
+  logic [13:0] cio_gpio_en_unused;
+  */
 
   /* DMA signals */
   logic dma_clk_gate_en_n[core_v_mini_mcu_pkg::DMA_CH_NUM-1:0];
@@ -443,7 +446,7 @@ module ao_peripheral_subsystem
       .fast_intr_o
   );
 
-  /* GPIO subsystem */
+  /*
   gpio #(
       .reg_req_t(reg_pkg::reg_req_t),
       .reg_rsp_t(reg_pkg::reg_rsp_t)
@@ -459,7 +462,7 @@ module ao_peripheral_subsystem
       .pin_level_interrupts_o({intr_gpio_unused, intr_gpio_o}),
       .global_interrupt_o()
   );
-
+*/
   reg_to_tlul #(
       .req_t(reg_pkg::reg_req_t),
       .rsp_t(reg_pkg::reg_rsp_t),
